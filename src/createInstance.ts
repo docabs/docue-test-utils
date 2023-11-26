@@ -15,7 +15,7 @@ import {
 
 import { MountingOptions, Slot } from './types'
 import {
-  // getComponentsFromStubs,
+  getComponentsFromStubs,
   // getDirectivesFromStubs,
   isFunctionalComponent,
   isObject,
@@ -144,23 +144,23 @@ export function createInstance(
       {}
     )
 
-  //   // override component data with mounting options data
-  //   if (options?.data) {
-  //     const providedData = options.data()
-  //     if (isObjectComponent(originalComponent)) {
-  //       // component is guaranteed to be the same type as originalComponent
-  //       const objectComponent = component as ComponentOptions
-  //       const originalDataFn = originalComponent.data || (() => ({}))
-  //       objectComponent.data = (vm) => ({
-  //         ...originalDataFn.call(vm, vm),
-  //         ...providedData
-  //       })
-  //     } else {
-  //       throw new Error(
-  //         'data() option is not supported on functional and class components'
-  //       )
-  //     }
-  //   }
+  // override component data with mounting options data
+  if (options?.data) {
+    const providedData = options.data()
+    if (isObjectComponent(originalComponent)) {
+      // component is guaranteed to be the same type as originalComponent
+      const objectComponent = component as ComponentOptions
+      const originalDataFn = originalComponent.data || (() => ({}))
+      objectComponent.data = (vm) => ({
+        ...originalDataFn.call(vm, vm),
+        ...providedData
+      })
+    } else {
+      throw new Error(
+        'data() option is not supported on functional and class components'
+      )
+    }
+  }
 
   const MOUNT_COMPONENT_REF = 'DTU_COMPONENT'
   // we define props as reactive so that way when we update them with `setProps`
@@ -181,10 +181,10 @@ export function createInstance(
     }
   })
 
-  //   const global = mergeGlobalProperties(options?.global)
-  //   if (isObjectComponent(component)) {
-  //     component.components = { ...component.components, ...global.components }
-  //   }
+  const global = mergeGlobalProperties(options?.global)
+  if (isObjectComponent(component)) {
+    component.components = { ...component.components, ...global.components }
+  }
 
   const componentRef = ref(null)
   // create the wrapper component
@@ -254,55 +254,55 @@ export function createInstance(
   //     app.mixin(mixin)
   //   }
 
-  //   // AppConfig
-  //   if (global.config) {
-  //     for (const [k, v] of Object.entries(global.config) as [
-  //       keyof Omit<AppConfig, 'isNativeTag'>,
-  //       any
-  //     ][]) {
-  //       app.config[k] = isObject(app.config[k])
-  //         ? Object.assign(app.config[k]!, v)
-  //         : v
-  //     }
-  //   }
+  // AppConfig
+  if (global.config) {
+    for (const [k, v] of Object.entries(global.config) as [
+      keyof Omit<AppConfig, 'isNativeTag'>,
+      any
+    ][]) {
+      app.config[k] = isObject(app.config[k])
+        ? Object.assign(app.config[k]!, v)
+        : v
+    }
+  }
 
-  //   // use and plugins from mounting options
-  //   if (global.plugins) {
-  //     for (const plugin of global.plugins) {
-  //       if (Array.isArray(plugin)) {
-  //         app.use(plugin[0], ...plugin.slice(1))
-  //         continue
-  //       }
-  //       app.use(plugin)
-  //     }
-  //   }
+  // use and plugins from mounting options
+  if (global.plugins) {
+    for (const plugin of global.plugins) {
+      if (Array.isArray(plugin)) {
+        app.use(plugin[0], ...plugin.slice(1))
+        continue
+      }
+      app.use(plugin)
+    }
+  }
 
-  //   // use any mixins from mounting options
-  //   if (global.mixins) {
-  //     for (const mixin of global.mixins) app.mixin(mixin)
-  //   }
+  // use any mixins from mounting options
+  if (global.mixins) {
+    for (const mixin of global.mixins) app.mixin(mixin)
+  }
 
-  //   if (global.components) {
-  //     for (const key of Object.keys(global.components)) {
-  //       // avoid registering components that are stubbed twice
-  //       if (!(key in global.stubs)) {
-  //         app.component(key, global.components[key])
-  //       }
-  //     }
-  //   }
+  if (global.components) {
+    for (const key of Object.keys(global.components)) {
+      // avoid registering components that are stubbed twice
+      if (!(key in global.stubs)) {
+        app.component(key, global.components[key])
+      }
+    }
+  }
 
-  //   if (global.directives) {
-  //     for (const key of Object.keys(global.directives))
-  //       app.directive(key, global.directives[key])
-  //   }
+  if (global.directives) {
+    for (const key of Object.keys(global.directives))
+      app.directive(key, global.directives[key])
+  }
 
-  //   // provide any values passed via provides mounting option
-  //   if (global.provide) {
-  //     for (const key of Reflect.ownKeys(global.provide)) {
-  //       // @ts-ignore: https://github.com/microsoft/TypeScript/issues/1863
-  //       app.provide(key, global.provide[key])
-  //     }
-  //   }
+  // provide any values passed via provides mounting option
+  if (global.provide) {
+    for (const key of Reflect.ownKeys(global.provide)) {
+      // @ts-ignore: https://github.com/microsoft/TypeScript/issues/1863
+      app.provide(key, global.provide[key])
+    }
+  }
 
   // stubs
   // even if we are using `mount`, we will still
@@ -324,23 +324,23 @@ export function createInstance(
   //   })
   // )
 
-  //   // users expect stubs to work with globally registered
-  //   // components so we register stubs as global components to avoid
-  //   // warning about not being able to resolve component
-  //   //
-  //   // component implementation provided here will never be called
-  //   // but we need name to make sure that stubComponents will
-  //   // properly stub this later by matching stub name
-  //   //
-  //   // ref: https://github.com/docuejs/test-utils/issues/249
-  //   // ref: https://github.com/docuejs/test-utils/issues/425
-  //   if (global?.stubs) {
-  //     for (const name of Object.keys(getComponentsFromStubs(global.stubs))) {
-  //       if (!app.component(name)) {
-  //         app.component(name, { name })
-  //       }
-  //     }
-  //   }
+  // users expect stubs to work with globally registered
+  // components so we register stubs as global components to avoid
+  // warning about not being able to resolve component
+  //
+  // component implementation provided here will never be called
+  // but we need name to make sure that stubComponents will
+  // properly stub this later by matching stub name
+  //
+  // ref: https://github.com/docuejs/test-utils/issues/249
+  // ref: https://github.com/docuejs/test-utils/issues/425
+  if (global?.stubs) {
+    for (const name of Object.keys(getComponentsFromStubs(global.stubs))) {
+      if (!app.component(name)) {
+        app.component(name, { name })
+      }
+    }
+  }
 
   return {
     app,

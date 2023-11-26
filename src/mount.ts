@@ -84,21 +84,21 @@ export function mount(
   // mount the app!
   const el = document.createElement('div')
 
-  // if (options?.attachTo) {
-  //   let to: Element | null
-  //   if (typeof options.attachTo === 'string') {
-  //     to = document.querySelector(options.attachTo)
-  //     if (!to) {
-  //       throw new Error(
-  //         `Unable to find the element matching the selector ${options.attachTo} given as the \`attachTo\` option`
-  //       )
-  //     }
-  //   } else {
-  //     to = options.attachTo
-  //   }
+  if (options?.attachTo) {
+    let to: Element | null
+    if (typeof options.attachTo === 'string') {
+      to = document.querySelector(options.attachTo)
+      if (!to) {
+        throw new Error(
+          `Unable to find the element matching the selector ${options.attachTo} given as the \`attachTo\` option`
+        )
+      }
+    } else {
+      to = options.attachTo
+    }
 
-  //   to.appendChild(el)
-  // }
+    to.appendChild(el)
+  }
   const vm = app.mount(el)
 
   if (errorOnMount) {

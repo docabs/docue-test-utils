@@ -21,21 +21,21 @@ import { config } from './config'
 //   }
 // }
 
-// // perform 1-level-deep-pseudo-clone merge in order to prevent config leaks
-// // example: vue-router overwrites globalProperties.$router
-// function mergeAppConfig(
-//   configGlobalConfig: GlobalMountOptions['config'],
-//   mountGlobalConfig: GlobalMountOptions['config']
-// ): Required<GlobalMountOptions>['config'] {
-//   return {
-//     ...configGlobalConfig,
-//     ...mountGlobalConfig,
-//     globalProperties: {
-//       ...configGlobalConfig?.globalProperties,
-//       ...mountGlobalConfig?.globalProperties
-//     } as Required<GlobalMountOptions>['config']['globalProperties']
-//   }
-// }
+// perform 1-level-deep-pseudo-clone merge in order to prevent config leaks
+// example: vue-router overwrites globalProperties.$router
+function mergeAppConfig(
+  configGlobalConfig: GlobalMountOptions['config'],
+  mountGlobalConfig: GlobalMountOptions['config']
+): Required<GlobalMountOptions>['config'] {
+  return {
+    ...configGlobalConfig,
+    ...mountGlobalConfig,
+    globalProperties: {
+      ...configGlobalConfig?.globalProperties,
+      ...mountGlobalConfig?.globalProperties
+    } as Required<GlobalMountOptions>['config']['globalProperties']
+  }
+}
 
 export function mergeGlobalProperties(
   mountGlobal: GlobalMountOptions = {}
@@ -57,14 +57,14 @@ export function mergeGlobalProperties(
   }
 
   return {
-    // mixins: [...(configGlobal.mixins || []), ...(mountGlobal.mixins || [])],
+    mixins: [...(configGlobal.mixins || []), ...(mountGlobal.mixins || [])],
     plugins: [...(configGlobal.plugins || []), ...(mountGlobal.plugins || [])],
-    // stubs,
-    // components: { ...configGlobal.components, ...mountGlobal.components },
+    stubs,
+    components: { ...configGlobal.components, ...mountGlobal.components },
     provide: { ...configGlobal.provide, ...mountGlobal.provide },
-    // mocks: { ...configGlobal.mocks, ...mountGlobal.mocks },
-    // config: mergeAppConfig(configGlobal.config, mountGlobal.config),
-    // directives: { ...configGlobal.directives, ...mountGlobal.directives },
+    mocks: { ...configGlobal.mocks, ...mountGlobal.mocks },
+    config: mergeAppConfig(configGlobal.config, mountGlobal.config),
+    directives: { ...configGlobal.directives, ...mountGlobal.directives },
     renderStubDefaultSlot
   }
 }
@@ -152,32 +152,32 @@ export function isNotNullOrUndefined<T extends {}>(
 //   return typeof selector === 'object' && 'ref' in selector
 // }
 
-// export function convertStubsToRecord(stubs: Stubs) {
-//   if (Array.isArray(stubs)) {
-//     // ['Foo', 'Bar'] => { Foo: true, Bar: true }
-//     return stubs.reduce(
-//       (acc, current) => {
-//         acc[current] = true
-//         return acc
-//       },
-//       {} as Record<string, Stub>
-//     )
-//   }
+export function convertStubsToRecord(stubs: Stubs) {
+  if (Array.isArray(stubs)) {
+    // ['Foo', 'Bar'] => { Foo: true, Bar: true }
+    return stubs.reduce(
+      (acc, current) => {
+        acc[current] = true
+        return acc
+      },
+      {} as Record<string, Stub>
+    )
+  }
 
-//   return stubs
-// }
+  return stubs
+}
 
-// const isDirectiveKey = (key: string) => key.match(/^v[A-Z].*/)
+const isDirectiveKey = (key: string) => key.match(/^v[A-Z].*/)
 
-// export function getComponentsFromStubs(
-//   stubs: Stubs
-// ): Record<string, Component | boolean> {
-//   const normalizedStubs = convertStubsToRecord(stubs)
+export function getComponentsFromStubs(
+  stubs: Stubs
+): Record<string, Component | boolean> {
+  const normalizedStubs = convertStubsToRecord(stubs)
 
-//   return Object.fromEntries(
-//     Object.entries(normalizedStubs).filter(([key]) => !isDirectiveKey(key))
-//   ) as Record<string, Component | boolean>
-// }
+  return Object.fromEntries(
+    Object.entries(normalizedStubs).filter(([key]) => !isDirectiveKey(key))
+  ) as Record<string, Component | boolean>
+}
 
 // export function getDirectivesFromStubs(
 //   stubs: Stubs

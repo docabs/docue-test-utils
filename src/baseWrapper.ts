@@ -53,9 +53,9 @@ export default abstract class BaseWrapper<ElementType extends Node>
       ...elementRootNodes.filter((node) => node.matches(selector))
     ]
 
-    // elementRootNodes.forEach((rootNode) => {
-    //   result.push(...Array.from(rootNode.querySelectorAll(selector)))
-    // })
+    elementRootNodes.forEach((rootNode) => {
+      result.push(...Array.from(rootNode.querySelectorAll(selector)))
+    })
 
     return result
   }
@@ -246,19 +246,19 @@ export default abstract class BaseWrapper<ElementType extends Node>
     return classes
   }
 
-  //   attributes(): { [key: string]: string }
-  //   attributes(key: string): string | undefined
-  //   attributes(key?: string): { [key: string]: string } | string | undefined {
-  //     const attributeMap: Record<string, string> = {}
-  //     if (isElement(this.element)) {
-  //       const attributes = Array.from(this.element.attributes)
-  //       for (const attribute of attributes) {
-  //         attributeMap[attribute.localName] = attribute.value
-  //       }
-  //     }
+  attributes(): { [key: string]: string }
+  attributes(key: string): string | undefined
+  attributes(key?: string): { [key: string]: string } | string | undefined {
+    const attributeMap: Record<string, string> = {}
+    if (isElement(this.element)) {
+      const attributes = Array.from(this.element.attributes)
+      for (const attribute of attributes) {
+        attributeMap[attribute.localName] = attribute.value
+      }
+    }
 
-  //     return key ? attributeMap[key] : attributeMap
-  //   }
+    return key ? attributeMap[key] : attributeMap
+  }
 
   text() {
     return this.getRootNodes().map(textContent).join('')
@@ -329,25 +329,25 @@ export default abstract class BaseWrapper<ElementType extends Node>
   //     throw new Error(message)
   //   }
 
-  //   protected isDisabled = () => {
-  //     const validTagsToBeDisabled = [
-  //       'BUTTON',
-  //       'COMMAND',
-  //       'FIELDSET',
-  //       'KEYGEN',
-  //       'OPTGROUP',
-  //       'OPTION',
-  //       'SELECT',
-  //       'TEXTAREA',
-  //       'INPUT'
-  //     ]
-  //     const hasDisabledAttribute = this.attributes().disabled !== undefined
-  //     const elementCanBeDisabled =
-  //       isElement(this.element) &&
-  //       validTagsToBeDisabled.includes(this.element.tagName)
+  protected isDisabled = () => {
+    const validTagsToBeDisabled = [
+      'BUTTON',
+      'COMMAND',
+      'FIELDSET',
+      'KEYGEN',
+      'OPTGROUP',
+      'OPTION',
+      'SELECT',
+      'TEXTAREA',
+      'INPUT'
+    ]
+    const hasDisabledAttribute = this.attributes().disabled !== undefined
+    const elementCanBeDisabled =
+      isElement(this.element) &&
+      validTagsToBeDisabled.includes(this.element.tagName)
 
-  //     return hasDisabledAttribute && elementCanBeDisabled
-  //   }
+    return hasDisabledAttribute && elementCanBeDisabled
+  }
 
   isVisible() {
     return isElement(this.element) && isElementVisible(this.element)

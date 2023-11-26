@@ -88,5 +88,8 @@
         "react-dom"
       ]
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

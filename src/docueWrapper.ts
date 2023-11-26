@@ -1,6 +1,6 @@
 import { nextTick, App, ComponentPublicInstance, VNode } from 'docuejs'
 
-// import { config } from './config'
+import { config } from './config'
 // import domEvents from './constants/dom-events'
 import { DocueElement, DocueNode } from './types'
 import { hasSetupState, mergeDeep } from './utils'
@@ -13,7 +13,7 @@ import {
   registerFactory,
   WrapperType
 } from './wrapperFactory'
-// import { ShapeFlags } from './utils/docueShared'
+import { ShapeFlags } from './utils/docueShared'
 
 /**
  * Creates a proxy around the VM instance.
@@ -110,37 +110,37 @@ export class DocueWrapper<
 
     //     this.attachNativeEventListener()
 
-    //     config.plugins.DocueWrapper.extend(this)
+    config.plugins.DocueWrapper.extend(this)
   }
 
-  //   private get hasMultipleRoots(): boolean {
-  //     // Recursive check subtree for nested root elements
-  //     // <template>
-  //     //   <WithMultipleRoots />
-  //     // </template>
-  //     const checkTree = (subTree: VNode): boolean => {
-  //       // if the subtree is an array of children, we have multiple root nodes
-  //       if (subTree.shapeFlag === ShapeFlags.ARRAY_CHILDREN) return true
-  //       if (
-  //         subTree.shapeFlag & ShapeFlags.STATEFUL_COMPONENT ||
-  //         subTree.shapeFlag & ShapeFlags.FUNCTIONAL_COMPONENT
-  //       ) {
-  //         // We are rendering other component, check it's tree instead
-  //         if (subTree.component?.subTree) {
-  //           return checkTree(subTree.component.subTree)
-  //         }
+  private get hasMultipleRoots(): boolean {
+    // Recursive check subtree for nested root elements
+    // <template>
+    //   <WithMultipleRoots />
+    // </template>
+    const checkTree = (subTree: VNode): boolean => {
+      // if the subtree is an array of children, we have multiple root nodes
+      if (subTree.shapeFlag === ShapeFlags.ARRAY_CHILDREN) return true
+      if (
+        subTree.shapeFlag & ShapeFlags.STATEFUL_COMPONENT ||
+        subTree.shapeFlag & ShapeFlags.FUNCTIONAL_COMPONENT
+      ) {
+        // We are rendering other component, check it's tree instead
+        if (subTree.component?.subTree) {
+          return checkTree(subTree.component.subTree)
+        }
 
-  //         // Component has multiple children
-  //         if (subTree.shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
-  //           return true
-  //         }
-  //       }
+        // Component has multiple children
+        if (subTree.shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+          return true
+        }
+      }
 
-  //       return false
-  //     }
+      return false
+    }
 
-  //     return checkTree(this.vm.$.subTree)
-  //   }
+    return checkTree(this.vm.$.subTree)
+  }
 
   protected getRootNodes(): DocueNode[] {
     return getRootNodes(this.vm.$.vnode)
@@ -206,33 +206,33 @@ export class DocueWrapper<
   //     }
   //   }
 
-  //   get element(): Element {
-  //     // if the component has multiple root elements, we use the parent's element
-  //     return this.hasMultipleRoots ? this.parentElement : this.vm.$el
-  //   }
+  get element(): Element {
+    // if the component has multiple root elements, we use the parent's element
+    return this.hasMultipleRoots ? this.parentElement : this.vm.$el
+  }
 
   get vm(): T {
     return this.componentVM
   }
 
-  //   props(): T['$props']
-  //   props<Selector extends keyof T['$props']>(
-  //     selector: Selector
-  //   ): T['$props'][Selector]
-  //   props<Selector extends keyof T['$props']>(
-  //     selector?: Selector
-  //   ): T['$props'] | T['$props'][Selector] {
-  //     const props = this.componentVM.$props as T['$props']
-  //     return selector ? props[selector] : props
-  //   }
+  props(): T['$props']
+  props<Selector extends keyof T['$props']>(
+    selector: Selector
+  ): T['$props'][Selector]
+  props<Selector extends keyof T['$props']>(
+    selector?: Selector
+  ): T['$props'] | T['$props'][Selector] {
+    const props = this.componentVM.$props as T['$props']
+    return selector ? props[selector] : props
+  }
 
-  //   emitted<T = unknown>(): Record<string, T[]>
-  //   emitted<T = unknown[]>(eventName: string): undefined | T[]
-  //   emitted<T = unknown>(
-  //     eventName?: string
-  //   ): undefined | T[] | Record<string, T[]> {
-  //     return emitted(this.vm, eventName)
-  //   }
+  // emitted<T = unknown>(): Record<string, T[]>
+  // emitted<T = unknown[]>(eventName: string): undefined | T[]
+  // emitted<T = unknown>(
+  //   eventName?: string
+  // ): undefined | T[] | Record<string, T[]> {
+  //   return emitted(this.vm, eventName)
+  // }
 
   isVisible(): boolean {
     const domWrapper = createDOMWrapper(this.element)

@@ -27,37 +27,37 @@ interface Plugin<Instance, O> {
 class Pluggable<Instance = DOMWrapper<Node>> {
   installedPlugins: Plugin<Instance, any>[] = []
 
-  //   install<O>(handler: (instance: Instance) => Record<string, any>): void
-  //   install<O>(
-  //     handler: (instance: Instance, options: O) => Record<string, any>,
-  //     options: O
-  //   ): void
-  //   install<O>(
-  //     handler: (instance: Instance, options?: O) => Record<string, any>,
-  //     options?: O
-  //   ): void {
-  //     if (typeof handler !== 'function') {
-  //       console.error('plugin.install must receive a function')
-  //       handler = () => ({})
-  //     }
-  //     this.installedPlugins.push({ handler, options })
-  //   }
+  install<O>(handler: (instance: Instance) => Record<string, any>): void
+  install<O>(
+    handler: (instance: Instance, options: O) => Record<string, any>,
+    options: O
+  ): void
+  install<O>(
+    handler: (instance: Instance, options?: O) => Record<string, any>,
+    options?: O
+  ): void {
+    if (typeof handler !== 'function') {
+      console.error('plugin.install must receive a function')
+      handler = () => ({})
+    }
+    this.installedPlugins.push({ handler, options })
+  }
 
   extend(instance: Instance) {
     const invokeSetup = ({ handler, options }: Plugin<Instance, any>) => {
       return handler(instance, options) // invoke the setup method passed to install
     }
-    //     const bindProperty = ([property, value]: [string, any]) => {
-    //       // eslint-disable-next-line no-extra-semi
-    //       ;(instance as any)[property] =
-    //         typeof value === 'function' ? value.bind(instance) : value
-    //     }
-    //     const addAllPropertiesFromSetup = (setupResult: Record<string, any>) => {
-    //       setupResult = typeof setupResult === 'object' ? setupResult : {}
-    //       Object.entries(setupResult).forEach(bindProperty)
-    //     }
+    const bindProperty = ([property, value]: [string, any]) => {
+      // eslint-disable-next-line no-extra-semi
+      ;(instance as any)[property] =
+        typeof value === 'function' ? value.bind(instance) : value
+    }
+    const addAllPropertiesFromSetup = (setupResult: Record<string, any>) => {
+      setupResult = typeof setupResult === 'object' ? setupResult : {}
+      Object.entries(setupResult).forEach(bindProperty)
+    }
 
-    //     this.installedPlugins.map(invokeSetup).forEach(addAllPropertiesFromSetup)
+    this.installedPlugins.map(invokeSetup).forEach(addAllPropertiesFromSetup)
   }
 
   /** For testing */

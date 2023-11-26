@@ -112,44 +112,44 @@ export type GlobalMountOptions = {
    * @see https://test-utils.vuejs.org/api/#global-plugins
    */
   plugins?: (Plugin | [Plugin, ...any[]])[]
-  //   /**
-  //    * Customizes Docue application global configuration
-  //    * @see https://v3.vuejs.org/api/application-config.html#application-config
-  //    */
-  //   config?: Partial<Omit<AppConfig, 'isNativeTag'>> // isNativeTag is readonly, so we omit it
-  //   /**
-  //    * Applies a mixin for components under testing.
-  //    * @see https://test-utils.vuejs.org/api/#global-mixins
-  //    */
-  //   mixins?: ComponentOptions[]
-  //   /**
-  //    * Mocks a global instance property.
-  //    * This is designed to mock variables injected by third party plugins, not
-  //    * Docue's native properties such as $root, $children, etc.
-  //    * @see https://test-utils.vuejs.org/api/#global-mocks
-  //    */
-  //   mocks?: Record<string, any>
+  /**
+   * Customizes Docue application global configuration
+   * @see https://v3.vuejs.org/api/application-config.html#application-config
+   */
+  config?: Partial<Omit<AppConfig, 'isNativeTag'>> // isNativeTag is readonly, so we omit it
+  /**
+   * Applies a mixin for components under testing.
+   * @see https://test-utils.vuejs.org/api/#global-mixins
+   */
+  mixins?: ComponentOptions[]
+  /**
+   * Mocks a global instance property.
+   * This is designed to mock variables injected by third party plugins, not
+   * Docue's native properties such as $root, $children, etc.
+   * @see https://test-utils.vuejs.org/api/#global-mocks
+   */
+  mocks?: Record<string, any>
   /**
    * Provides data to be received in a setup function via `inject`.
    * @see https://test-utils.vuejs.org/api/#global-provide
    */
   provide?: Record<any, any>
-  //   /**
-  //    * Registers components globally for components under testing.
-  //    * @see https://test-utils.vuejs.org/api/#global-components
-  //    */
-  //   components?: Record<string, Component | object>
-  //   /**
-  //    * Registers a directive globally for components under testing
-  //    * @see https://test-utils.vuejs.org/api/#global-directives
-  //    */
-  //   directives?: Record<string, Directive>
-  //   /**
-  //    * Stubs a component for components under testing.
-  //    * @default "{ transition: true, 'transition-group': true }"
-  //    * @see https://test-utils.vuejs.org/api/#global-stubs
-  //    */
-  //   stubs?: Stubs
+  /**
+   * Registers components globally for components under testing.
+   * @see https://test-utils.vuejs.org/api/#global-components
+   */
+  components?: Record<string, Component | object>
+  /**
+   * Registers a directive globally for components under testing
+   * @see https://test-utils.vuejs.org/api/#global-directives
+   */
+  directives?: Record<string, Directive>
+  /**
+   * Stubs a component for components under testing.
+   * @default "{ transition: true, 'transition-group': true }"
+   * @see https://test-utils.vuejs.org/api/#global-stubs
+   */
+  stubs?: Stubs
   /**
    * Allows rendering the default slot content, even when using
    * `shallow` or `shallowMount`.

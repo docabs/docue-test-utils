@@ -8,14 +8,14 @@ import { MountingOptions } from './types'
 import { createWrapperError } from './errorWrapper'
 import { config } from './config'
 import { flushPromises } from './utils/flushPromises'
-// import { enableAutoUnmount, disableAutoUnmount } from './utils/autoUnmount'
+import { enableAutoUnmount, disableAutoUnmount } from './utils/autoUnmount'
 
 export {
   mount,
   shallowMount,
   // renderToString,
-  // enableAutoUnmount,
-  // disableAutoUnmount,
+  enableAutoUnmount,
+  disableAutoUnmount,
   // RouterLinkStub,
   DocueWrapper,
   DOMWrapper,
