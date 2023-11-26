@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "outDir": "dist",
+    "module": "esnext",
+    "lib": ["DOM", "ES2015", "ES2017"],
+    "strict": true,
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": true,
+    "baseUrl": ".",
+    "paths": {
+      // "docuejs": ["node_modules/docuejs/dist/docuejs.esm-bundler.js"]
+    }
+  },
+  "include": ["tests", "src", "types"]
+}
