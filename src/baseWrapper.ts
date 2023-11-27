@@ -1,5 +1,5 @@
 import { textContent } from './utils'
-// import type { TriggerOptions } from './createDomEvent'
+import type { TriggerOptions } from './createDomEvent'
 import {
   ComponentInternalInstance,
   ComponentOptions,
@@ -10,8 +10,8 @@ import {
   MethodOptions,
   nextTick
 } from 'docuejs'
-// import { createDOMEvent } from './createDomEvent'
-// import { DomEventNameWithModifier } from './constants/dom-events'
+import { createDOMEvent } from './createDomEvent'
+import { DomEventNameWithModifier } from './constants/dom-events'
 import type { DocueWrapper } from './docueWrapper'
 import {
   DefinedComponent,
@@ -355,32 +355,32 @@ export default abstract class BaseWrapper<ElementType extends Node>
 
   protected abstract getCurrentComponent(): ComponentInternalInstance | void
 
-  //   async trigger(
-  //     eventString: DomEventNameWithModifier,
-  //     options?: TriggerOptions
-  //   ): Promise<void>
-  //   async trigger(eventString: string, options?: TriggerOptions): Promise<void>
-  //   async trigger(eventString: string, options?: TriggerOptions) {
-  //     if (options && options['target']) {
-  //       throw Error(
-  //         `[docue-test-utils]: you cannot set the target value of an event. See the notes section ` +
-  //           `of the docs for more details—` +
-  //           `https://vue-test-utils.vuejs.org/api/wrapper/trigger.html`
-  //       )
-  //     }
+  async trigger(
+    eventString: DomEventNameWithModifier,
+    options?: TriggerOptions
+  ): Promise<void>
+  async trigger(eventString: string, options?: TriggerOptions): Promise<void>
+  async trigger(eventString: string, options?: TriggerOptions) {
+    if (options && options['target']) {
+      throw Error(
+        `[docue-test-utils]: you cannot set the target value of an event. See the notes section ` +
+          `of the docs for more details—` +
+          `https://vue-test-utils.vuejs.org/api/wrapper/trigger.html`
+      )
+    }
 
-  //     if (this.element && !this.isDisabled()) {
-  //       const event = createDOMEvent(eventString, options)
-  //       // see https://github.com/vuejs/test-utils/issues/1854
-  //       // fakeTimers provoke an issue as Date.now() always return the same value
-  //       // and Docue relies on it to determine if the handler should be invoked
-  //       // see https://github.com/vuejs/core/blob/5ee40532a63e0b792e0c1eccf3cf68546a4e23e9/packages/runtime-dom/src/modules/events.ts#L100-L104
-  //       // we workaround this issue by manually setting _vts to Date.now() + 1
-  //       // thus making sure the event handler is invoked
-  //       event._vts = Date.now() + 1
-  //       this.element.dispatchEvent(event)
-  //     }
+    if (this.element && !this.isDisabled()) {
+      const event = createDOMEvent(eventString, options)
+      // see https://github.com/vuejs/test-utils/issues/1854
+      // fakeTimers provoke an issue as Date.now() always return the same value
+      // and Docue relies on it to determine if the handler should be invoked
+      // see https://github.com/vuejs/core/blob/5ee40532a63e0b792e0c1eccf3cf68546a4e23e9/packages/runtime-dom/src/modules/events.ts#L100-L104
+      // we workaround this issue by manually setting _vts to Date.now() + 1
+      // thus making sure the event handler is invoked
+      event._vts = Date.now() + 1
+      this.element.dispatchEvent(event)
+    }
 
-  //     return nextTick()
-  //   }
+    return nextTick()
+  }
 }

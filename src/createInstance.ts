@@ -24,7 +24,7 @@ import {
   mergeGlobalProperties
 } from './utils'
 import { processSlot } from './utils/compileSlots'
-// import { attachEmitListener } from './emit'
+import { attachEmitListener } from './emit'
 import { registerStub } from './stubs'
 import {
   isLegacyFunctionalComponent,
@@ -203,9 +203,9 @@ export function createInstance(
   // create the app
   const app = createApp(Parent)
 
-  //   // add tracking for emitted events
-  //   // this must be done after `createApp`: https://github.com/docuejs/test-utils/issues/436
-  //   attachEmitListener()
+  // add tracking for emitted events
+  // this must be done after `createApp`: https://github.com/docuejs/test-utils/issues/436
+  attachEmitListener()
 
   //   // global mocks mixin
   //   if (global?.mocks) {

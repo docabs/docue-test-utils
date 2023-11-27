@@ -1,15 +1,15 @@
 import {
-  // setDevtoolsHook,
-  // devtools,
+  setDevtoolsHook,
+  devtools,
   ComponentPublicInstance,
   ComponentInternalInstance
 } from 'docuejs'
 
 type Events<T = unknown> = Record<number, Record<string, T[]>>
 
-// const enum DevtoolsHooks {
-//   COMPONENT_EMIT = 'component:emit'
-// }
+const enum DevtoolsHooks {
+  COMPONENT_EMIT = 'component:emit'
+}
 
 let events: Events = {}
 
@@ -27,22 +27,22 @@ export function emitted<T = unknown>(
   return vmEvents
 }
 
-// export const attachEmitListener = () => {
-//   // use devtools to capture this "emit"
-//   setDevtoolsHook(createDevTools(), {})
-// }
+export const attachEmitListener = () => {
+  // use devtools to capture this "emit"
+  setDevtoolsHook(createDevTools(), {})
+}
 
-// // devtools hook only catches Vue component custom events
-// function createDevTools(): any {
-//   return {
-//     emit(eventType, ...payload) {
-//       if (eventType !== DevtoolsHooks.COMPONENT_EMIT) return
+// devtools hook only catches Vue component custom events
+function createDevTools(): any {
+  return {
+    emit(eventType, ...payload) {
+      if (eventType !== DevtoolsHooks.COMPONENT_EMIT) return
 
-//       const [_, componentVM, event, eventArgs] = payload
-//       recordEvent(componentVM, event, eventArgs)
-//     }
-//   } as Partial<typeof devtools>
-// }
+      const [_, componentVM, event, eventArgs] = payload
+      recordEvent(componentVM, event, eventArgs)
+    }
+  } as Partial<typeof devtools>
+}
 
 export const recordEvent = (
   vm: ComponentInternalInstance,

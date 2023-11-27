@@ -1,7 +1,7 @@
 import { nextTick, App, ComponentPublicInstance, VNode } from 'docuejs'
 
 import { config } from './config'
-// import domEvents from './constants/dom-events'
+import domEvents from './constants/dom-events'
 import { DocueElement, DocueNode } from './types'
 import { hasSetupState, mergeDeep } from './utils'
 import { getRootNodes } from './utils/getRootNodes'
@@ -25,50 +25,50 @@ function createVMProxy<T extends ComponentPublicInstance>(
   setupState: Record<string, any>
 ): T {
   return new Proxy(vm, {
-    //     get(vm, key, receiver) {
-    //       if (vm.$.exposed && vm.$.exposeProxy && key in vm.$.exposeProxy) {
-    //         // first if the key is exposed
-    //         return Reflect.get(vm.$.exposeProxy, key, receiver)
-    //       } else if (key in setupState) {
-    //         // second if the key is acccessible from the setupState
-    //         return Reflect.get(setupState, key, receiver)
-    //       } else {
-    //         // vm.$.ctx is the internal context of the vm
-    //         // with all variables, methods and props
-    //         return (vm as any).$.ctx[key]
-    //       }
-    //     },
-    //     set(vm, key, value, receiver) {
-    //       if (key in setupState) {
-    //         return Reflect.set(setupState, key, value, receiver)
-    //       } else {
-    //         return Reflect.set(vm, key, value, receiver)
-    //       }
-    //     },
-    //     has(vm, property) {
-    //       return Reflect.has(setupState, property) || Reflect.has(vm, property)
-    //     },
-    //     defineProperty(vm, key, attributes) {
-    //       if (key in setupState) {
-    //         return Reflect.defineProperty(setupState, key, attributes)
-    //       } else {
-    //         return Reflect.defineProperty(vm, key, attributes)
-    //       }
-    //     },
-    //     getOwnPropertyDescriptor(vm, property) {
-    //       if (property in setupState) {
-    //         return Reflect.getOwnPropertyDescriptor(setupState, property)
-    //       } else {
-    //         return Reflect.getOwnPropertyDescriptor(vm, property)
-    //       }
-    //     },
-    //     deleteProperty(vm, property) {
-    //       if (property in setupState) {
-    //         return Reflect.deleteProperty(setupState, property)
-    //       } else {
-    //         return Reflect.deleteProperty(vm, property)
-    //       }
-    //     }
+    get(vm, key, receiver) {
+      if (vm.$.exposed && vm.$.exposeProxy && key in vm.$.exposeProxy) {
+        // first if the key is exposed
+        return Reflect.get(vm.$.exposeProxy, key, receiver)
+      } else if (key in setupState) {
+        // second if the key is acccessible from the setupState
+        return Reflect.get(setupState, key, receiver)
+      } else {
+        // vm.$.ctx is the internal context of the vm
+        // with all variables, methods and props
+        return (vm as any).$.ctx[key]
+      }
+    },
+    set(vm, key, value, receiver) {
+      if (key in setupState) {
+        return Reflect.set(setupState, key, value, receiver)
+      } else {
+        return Reflect.set(vm, key, value, receiver)
+      }
+    },
+    has(vm, property) {
+      return Reflect.has(setupState, property) || Reflect.has(vm, property)
+    },
+    defineProperty(vm, key, attributes) {
+      if (key in setupState) {
+        return Reflect.defineProperty(setupState, key, attributes)
+      } else {
+        return Reflect.defineProperty(vm, key, attributes)
+      }
+    },
+    getOwnPropertyDescriptor(vm, property) {
+      if (property in setupState) {
+        return Reflect.getOwnPropertyDescriptor(setupState, property)
+      } else {
+        return Reflect.getOwnPropertyDescriptor(vm, property)
+      }
+    },
+    deleteProperty(vm, property) {
+      if (property in setupState) {
+        return Reflect.deleteProperty(setupState, property)
+      } else {
+        return Reflect.deleteProperty(vm, property)
+      }
+    }
   })
 }
 
@@ -108,7 +108,7 @@ export class DocueWrapper<
     }
     this.__setProps = setProps
 
-    //     this.attachNativeEventListener()
+    this.attachNativeEventListener()
 
     config.plugins.DocueWrapper.extend(this)
   }
@@ -169,42 +169,42 @@ export class DocueWrapper<
     return this.findAllDOMElements(selector).map(createDOMWrapper)
   }
 
-  //   private attachNativeEventListener(): void {
-  //     const vm = this.vm
-  //     if (!vm) return
+  private attachNativeEventListener(): void {
+    const vm = this.vm
+    if (!vm) return
 
-  //     const emits = vm.$options.emits
-  //       ? // if emits is declared as an array
-  //         Array.isArray(vm.$options.emits)
-  //         ? // use it
-  //           vm.$options.emits
-  //         : // otherwise it's declared as an object
-  //           // and we only need the keys
-  //           Object.keys(vm.$options.emits)
-  //       : []
+    const emits = vm.$options.emits
+      ? // if emits is declared as an array
+        Array.isArray(vm.$options.emits)
+        ? // use it
+          vm.$options.emits
+        : // otherwise it's declared as an object
+          // and we only need the keys
+          Object.keys(vm.$options.emits)
+      : []
 
-  //     const elementRoots = this.getRootNodes().filter(
-  //       (node): node is Element => node instanceof Element
-  //     )
-  //     if (elementRoots.length !== 1) {
-  //       return
-  //     }
-  //     const [element] = elementRoots
-  //     for (let eventName of Object.keys(domEvents)) {
-  //       // if a component includes events in 'emits' with the same name as native
-  //       // events, the native events with that name should be ignored
-  //       // @see https://github.com/vuejs/rfcs/blob/master/active-rfcs/0030-emits-option.md#fallthrough-control
-  //       if (emits.includes(eventName)) continue
+    const elementRoots = this.getRootNodes().filter(
+      (node): node is Element => node instanceof Element
+    )
+    if (elementRoots.length !== 1) {
+      return
+    }
+    const [element] = elementRoots
+    for (let eventName of Object.keys(domEvents)) {
+      // if a component includes events in 'emits' with the same name as native
+      // events, the native events with that name should be ignored
+      // @see https://github.com/vuejs/rfcs/blob/master/active-rfcs/0030-emits-option.md#fallthrough-control
+      if (emits.includes(eventName)) continue
 
-  //       const eventListener: EventListener = (...args) => {
-  //         recordEvent(vm.$, eventName, args)
-  //       }
-  //       element.addEventListener(eventName, eventListener)
-  //       this.cleanUpCallbacks.push(() => {
-  //         element.removeEventListener(eventName, eventListener)
-  //       })
-  //     }
-  //   }
+      const eventListener: EventListener = (...args) => {
+        recordEvent(vm.$, eventName, args)
+      }
+      element.addEventListener(eventName, eventListener)
+      this.cleanUpCallbacks.push(() => {
+        element.removeEventListener(eventName, eventListener)
+      })
+    }
+  }
 
   get element(): Element {
     // if the component has multiple root elements, we use the parent's element
@@ -226,13 +226,13 @@ export class DocueWrapper<
     return selector ? props[selector] : props
   }
 
-  // emitted<T = unknown>(): Record<string, T[]>
-  // emitted<T = unknown[]>(eventName: string): undefined | T[]
-  // emitted<T = unknown>(
-  //   eventName?: string
-  // ): undefined | T[] | Record<string, T[]> {
-  //   return emitted(this.vm, eventName)
-  // }
+  emitted<T = unknown>(): Record<string, T[]>
+  emitted<T = unknown[]>(eventName: string): undefined | T[]
+  emitted<T = unknown>(
+    eventName?: string
+  ): undefined | T[] | Record<string, T[]> {
+    return emitted(this.vm, eventName)
+  }
 
   isVisible(): boolean {
     const domWrapper = createDOMWrapper(this.element)
