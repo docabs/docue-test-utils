@@ -49,18 +49,18 @@ export const recordEvent = (
   event: string,
   args: unknown[]
 ): void => {
-  // // Functional component wrapper creates a parent component
-  // let wrapperVm = vm
-  // while (typeof wrapperVm?.type === 'function') wrapperVm = wrapperVm.parent!
-  // const cid = wrapperVm.uid
-  // if (!(cid in events)) {
-  //   events[cid] = {}
-  // }
-  // if (!(event in events[cid])) {
-  //   events[cid][event] = []
-  // }
-  // // Record the event message sent by the emit
-  // events[cid][event].push(args)
+  // Functional component wrapper creates a parent component
+  let wrapperVm = vm
+  while (typeof wrapperVm?.type === 'function') wrapperVm = wrapperVm.parent!
+  const cid = wrapperVm.uid
+  if (!(cid in events)) {
+    events[cid] = {}
+  }
+  if (!(event in events[cid])) {
+    events[cid][event] = []
+  }
+  // Record the event message sent by the emit
+  events[cid][event].push(args)
 }
 
 export const removeEventHistory = (vm: ComponentPublicInstance): void => {

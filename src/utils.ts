@@ -146,11 +146,11 @@ export function isNotNullOrUndefined<T extends {}>(
   return Boolean(obj)
 }
 
-// export function isRefSelector(
-//   selector: string | RefSelector
-// ): selector is RefSelector {
-//   return typeof selector === 'object' && 'ref' in selector
-// }
+export function isRefSelector(
+  selector: string | RefSelector
+): selector is RefSelector {
+  return typeof selector === 'object' && 'ref' in selector
+}
 
 export function convertStubsToRecord(stubs: Stubs) {
   if (Array.isArray(stubs)) {

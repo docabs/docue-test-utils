@@ -22,7 +22,7 @@ import {
   DocueNode
 } from './types'
 import WrapperLike from './interfaces/wrapperLike'
-// import { find, matches } from './utils/find'
+import { find, matches } from './utils/find'
 import { createWrapperError } from './errorWrapper'
 import { isElementVisible } from './utils/isElementVisible'
 import { isElement } from './utils/isElement'
@@ -106,116 +106,116 @@ export default abstract class BaseWrapper<ElementType extends Node>
   abstract findAll<T extends Element>(selector: string): DOMWrapper<T>[]
   abstract findAll(selector: string): DOMWrapper<Element>[]
 
-  //   // searching by string without specifying component results in WrapperLike object
-  //   findComponent<T extends never>(selector: string): WrapperLike
-  //   // Find Component Options aka plain object
-  //   findComponent<
-  //     Props,
-  //     RawBindings = any,
-  //     D = any,
-  //     C extends ComputedOptions = ComputedOptions,
-  //     M extends MethodOptions = MethodOptions
-  //   >(
-  //     selector: ComponentOptions<Props, RawBindings, D, C, M>
-  //   ): DocueWrapper<CreateComponentPublicInstance<Props, RawBindings, D, C, M>>
-  //   findComponent<T extends ComponentOptions>(
-  //     selector: string
-  //   ): DocueWrapper<
-  //     T extends ComponentOptions<
-  //       infer Props,
-  //       infer RawBindings,
-  //       infer D,
-  //       infer C,
-  //       infer M
-  //     >
-  //       ? CreateComponentPublicInstance<Props, RawBindings, D, C, M>
-  //       : DocueWrapper<CreateComponentPublicInstance>
-  //   >
-  //   // searching for component created via defineComponent results in DocueWrapper of proper type
-  //   findComponent<T extends DefinedComponent>(
-  //     selector: T | Exclude<FindComponentSelector, FunctionalComponent>
-  //   ): DocueWrapper<InstanceType<T>>
-  //   // searching for functional component results in DOMWrapper
-  //   findComponent<T extends FunctionalComponent>(selector: T): DOMWrapper<Node>
-  //   findComponent<T extends FunctionalComponent>(
-  //     selector: string
-  //   ): DOMWrapper<Element>
-  //   // searching by name or ref always results in DocueWrapper
-  //   findComponent<T extends never>(
-  //     selector: NameSelector | RefSelector
-  //   ): DocueWrapper
-  //   findComponent<T extends ComponentPublicInstance>(
-  //     selector: T | FindComponentSelector
-  //   ): DocueWrapper<T>
-  //   // catch all declaration
-  //   findComponent<T extends never>(selector: FindComponentSelector): WrapperLike
+  // searching by string without specifying component results in WrapperLike object
+  findComponent<T extends never>(selector: string): WrapperLike
+  // Find Component Options aka plain object
+  findComponent<
+    Props,
+    RawBindings = any,
+    D = any,
+    C extends ComputedOptions = ComputedOptions,
+    M extends MethodOptions = MethodOptions
+  >(
+    selector: ComponentOptions<Props, RawBindings, D, C, M>
+  ): DocueWrapper<CreateComponentPublicInstance<Props, RawBindings, D, C, M>>
+  findComponent<T extends ComponentOptions>(
+    selector: string
+  ): DocueWrapper<
+    T extends ComponentOptions<
+      infer Props,
+      infer RawBindings,
+      infer D,
+      infer C,
+      infer M
+    >
+      ? CreateComponentPublicInstance<Props, RawBindings, D, C, M>
+      : DocueWrapper<CreateComponentPublicInstance>
+  >
+  // searching for component created via defineComponent results in DocueWrapper of proper type
+  findComponent<T extends DefinedComponent>(
+    selector: T | Exclude<FindComponentSelector, FunctionalComponent>
+  ): DocueWrapper<InstanceType<T>>
+  // searching for functional component results in DOMWrapper
+  findComponent<T extends FunctionalComponent>(selector: T): DOMWrapper<Node>
+  findComponent<T extends FunctionalComponent>(
+    selector: string
+  ): DOMWrapper<Element>
+  // searching by name or ref always results in DocueWrapper
+  findComponent<T extends never>(
+    selector: NameSelector | RefSelector
+  ): DocueWrapper
+  findComponent<T extends ComponentPublicInstance>(
+    selector: T | FindComponentSelector
+  ): DocueWrapper<T>
+  // catch all declaration
+  findComponent<T extends never>(selector: FindComponentSelector): WrapperLike
 
-  //   findComponent(selector: FindComponentSelector): WrapperLike {
-  //     const currentComponent = this.getCurrentComponent()
-  //     if (!currentComponent) {
-  //       return createWrapperError('DocueWrapper')
-  //     }
+  findComponent(selector: FindComponentSelector): WrapperLike {
+    const currentComponent = this.getCurrentComponent()
+    if (!currentComponent) {
+      return createWrapperError('DocueWrapper')
+    }
 
-  //     if (typeof selector === 'object' && 'ref' in selector) {
-  //       let result = currentComponent.refs[selector.ref]
+    if (typeof selector === 'object' && 'ref' in selector) {
+      let result = currentComponent.refs[selector.ref]
 
-  //       // When using ref inside v-for, then refs contains array of component instances
-  //       if (Array.isArray(result)) {
-  //         result = result.length ? result[0] : undefined
-  //       }
+      // When using ref inside v-for, then refs contains array of component instances
+      if (Array.isArray(result)) {
+        result = result.length ? result[0] : undefined
+      }
 
-  //       if (result && !(result instanceof HTMLElement)) {
-  //         return createDocueWrapper(null, result as ComponentPublicInstance)
-  //       } else {
-  //         return createWrapperError('DocueWrapper')
-  //       }
-  //     }
+      if (result && !(result instanceof HTMLElement)) {
+        return createDocueWrapper(null, result as ComponentPublicInstance)
+      } else {
+        return createWrapperError('DocueWrapper')
+      }
+    }
 
-  //     if (
-  //       matches(currentComponent.vnode, selector) &&
-  //       this.element.contains(currentComponent.vnode.el as Node)
-  //     ) {
-  //       return createDocueWrapper(null, currentComponent.proxy!)
-  //     }
+    if (
+      matches(currentComponent.vnode, selector) &&
+      this.element.contains(currentComponent.vnode.el as Node)
+    ) {
+      return createDocueWrapper(null, currentComponent.proxy!)
+    }
 
-  //     const [result] = this.findAllComponents(selector)
-  //     return result ?? createWrapperError('DocueWrapper')
-  //   }
+    const [result] = this.findAllComponents(selector)
+    return result ?? createWrapperError('DocueWrapper')
+  }
 
-  //   findAllComponents<T extends never>(selector: string): WrapperLike[]
-  //   findAllComponents<T extends DefinedComponent>(
-  //     selector: T | Exclude<FindAllComponentsSelector, FunctionalComponent>
-  //   ): DocueWrapper<InstanceType<T>>[]
-  //   findAllComponents<T extends FunctionalComponent>(
-  //     selector: T
-  //   ): DOMWrapper<Node>[]
-  //   findAllComponents<T extends FunctionalComponent>(
-  //     selector: string
-  //   ): DOMWrapper<Element>[]
-  //   findAllComponents<T extends never>(selector: NameSelector): DocueWrapper[]
-  //   findAllComponents<T extends ComponentPublicInstance>(
-  //     selector: T | FindAllComponentsSelector
-  //   ): DocueWrapper<T>[]
-  //   // catch all declaration
-  //   findAllComponents<T extends never>(
-  //     selector: FindAllComponentsSelector
-  //   ): WrapperLike[]
+  findAllComponents<T extends never>(selector: string): WrapperLike[]
+  findAllComponents<T extends DefinedComponent>(
+    selector: T | Exclude<FindAllComponentsSelector, FunctionalComponent>
+  ): DocueWrapper<InstanceType<T>>[]
+  findAllComponents<T extends FunctionalComponent>(
+    selector: T
+  ): DOMWrapper<Node>[]
+  findAllComponents<T extends FunctionalComponent>(
+    selector: string
+  ): DOMWrapper<Element>[]
+  findAllComponents<T extends never>(selector: NameSelector): DocueWrapper[]
+  findAllComponents<T extends ComponentPublicInstance>(
+    selector: T | FindAllComponentsSelector
+  ): DocueWrapper<T>[]
+  // catch all declaration
+  findAllComponents<T extends never>(
+    selector: FindAllComponentsSelector
+  ): WrapperLike[]
 
-  //   findAllComponents(selector: FindAllComponentsSelector): WrapperLike[] {
-  //     const currentComponent = this.getCurrentComponent()
-  //     if (!currentComponent) {
-  //       return []
-  //     }
+  findAllComponents(selector: FindAllComponentsSelector): WrapperLike[] {
+    const currentComponent = this.getCurrentComponent()
+    if (!currentComponent) {
+      return []
+    }
 
-  //     let results = find(currentComponent.subTree, selector)
+    let results = find(currentComponent.subTree, selector)
 
-  //     return results.map((c) =>
-  //       c.proxy
-  //         ? createDocueWrapper(null, c.proxy)
-  //         : createDOMWrapper(c.vnode.el as Element)
-  //     )
-  //   }
-  //   abstract setValue(value?: any): Promise<void>
+    return results.map((c) =>
+      c.proxy
+        ? createDocueWrapper(null, c.proxy)
+        : createDOMWrapper(c.vnode.el as Element)
+    )
+  }
+  abstract setValue(value?: any): Promise<void>
 
   html(options?: { raw?: boolean }): string {
     const stringNodes = this.getRootNodes().map((node) => stringifyNode(node))
@@ -289,45 +289,45 @@ export default abstract class BaseWrapper<ElementType extends Node>
     throw new Error(`Unable to get ${selector} within: ${this.html()}`)
   }
 
-  //   getComponent<T extends never>(selector: string): Omit<WrapperLike, 'exists'>
-  //   getComponent<T extends DefinedComponent>(
-  //     selector: T | Exclude<FindComponentSelector, FunctionalComponent>
-  //   ): Omit<DocueWrapper<InstanceType<T>>, 'exists'>
-  //   // searching for functional component results in DOMWrapper
-  //   getComponent<T extends FunctionalComponent>(
-  //     selector: T | string
-  //   ): Omit<DOMWrapper<Element>, 'exists'>
-  //   // searching by name or ref always results in DocueWrapper
-  //   getComponent<T extends never>(
-  //     selector: NameSelector | RefSelector
-  //   ): Omit<DocueWrapper, 'exists'>
-  //   getComponent<T extends ComponentPublicInstance>(
-  //     selector: T | FindComponentSelector
-  //   ): Omit<DocueWrapper<T>, 'exists'>
-  //   // catch all declaration
-  //   getComponent<T extends never>(
-  //     selector: FindComponentSelector
-  //   ): Omit<WrapperLike, 'exists'>
-  //   getComponent(selector: FindComponentSelector): Omit<WrapperLike, 'exists'> {
-  //     const result = this.findComponent(selector)
+  getComponent<T extends never>(selector: string): Omit<WrapperLike, 'exists'>
+  getComponent<T extends DefinedComponent>(
+    selector: T | Exclude<FindComponentSelector, FunctionalComponent>
+  ): Omit<DocueWrapper<InstanceType<T>>, 'exists'>
+  // searching for functional component results in DOMWrapper
+  getComponent<T extends FunctionalComponent>(
+    selector: T | string
+  ): Omit<DOMWrapper<Element>, 'exists'>
+  // searching by name or ref always results in DocueWrapper
+  getComponent<T extends never>(
+    selector: NameSelector | RefSelector
+  ): Omit<DocueWrapper, 'exists'>
+  getComponent<T extends ComponentPublicInstance>(
+    selector: T | FindComponentSelector
+  ): Omit<DocueWrapper<T>, 'exists'>
+  // catch all declaration
+  getComponent<T extends never>(
+    selector: FindComponentSelector
+  ): Omit<WrapperLike, 'exists'>
+  getComponent(selector: FindComponentSelector): Omit<WrapperLike, 'exists'> {
+    const result = this.findComponent(selector)
 
-  //     if (result.exists()) {
-  //       return result
-  //     }
+    if (result.exists()) {
+      return result
+    }
 
-  //     let message = 'Unable to get '
-  //     if (typeof selector === 'string') {
-  //       message += `component with selector ${selector}`
-  //     } else if ('name' in selector) {
-  //       message += `component with name ${selector.name}`
-  //     } else if ('ref' in selector) {
-  //       message += `component with ref ${selector.ref}`
-  //     } else {
-  //       message += 'specified component'
-  //     }
-  //     message += ` within: ${this.html()}`
-  //     throw new Error(message)
-  //   }
+    let message = 'Unable to get '
+    if (typeof selector === 'string') {
+      message += `component with selector ${selector}`
+    } else if ('name' in selector) {
+      message += `component with name ${selector.name}`
+    } else if ('ref' in selector) {
+      message += `component with ref ${selector.ref}`
+    } else {
+      message += 'specified component'
+    }
+    message += ` within: ${this.html()}`
+    throw new Error(message)
+  }
 
   protected isDisabled = () => {
     const validTagsToBeDisabled = [
